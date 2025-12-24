@@ -13,7 +13,7 @@ Repository: [fortune-c/chipper](https://github.com/fortune-c/chipper)
 
 ## Tech stack
 - Backend: Laravel (PHP)
-- Database: MySQL / MariaDB / PostgreSQL (configurable via .env)
+- Database: Sqlite (configurable via .env)
 - Frontend tooling: Node / npm (for asset compilation)
 - Optional: Laravel Queues, Scheduler, and Storage (for attachments)
 
@@ -21,7 +21,7 @@ Repository: [fortune-c/chipper](https://github.com/fortune-c/chipper)
 - PHP 8.1+ (or the version your Laravel release requires)
 - Composer
 - Node.js & npm (for compiling assets)
-- A database server (MySQL / MariaDB / Postgres)
+- A database server (Sqlite )
 - Git
 
 ## Quick start
