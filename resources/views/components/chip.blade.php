@@ -1,5 +1,4 @@
-
-@props(['chip'])
+@props(['chip', 'level' => 0])
 
 <div class="card bg-base-100 shadow">
     <div class="card-body">
@@ -8,14 +7,14 @@
                 <div class="avatar">
                     <div class="size-10 rounded-full">
                         <img src="https://avatars.laravel.cloud/{{ urlencode($chip->user->email) }}"
-                            alt="{{ $chip->user->name }}'s avatar" class="rounded-full" />
+                             alt="{{ $chip->user->name }}'s avatar" class="rounded-full" />
                     </div>
                 </div>
             @else
                 <div class="avatar placeholder">
                     <div class="size-10 rounded-full">
                         <img src="https://avatars.laravel.cloud/f61123d5-0b27-434c-a4ae-c653c7fc9ed6?vibe=stealth"
-                            alt="Anonymous User" class="rounded-full" />
+                             alt="Anonymous User" class="rounded-full" />
                     </div>
                 </div>
             @endif
@@ -32,26 +31,63 @@
                         @endif
                     </div>
 
-                    <!-- Replace the temporary @php block and $canEdit check with: -->
                     @can('update', $chip)
                         <div class="flex gap-1">
-                            <a href="/chips/{{ $chip->id }}/edit" class="btn btn-ghost btn-xs">
-                                Edit
-                            </a>
+                            <a href="/chips/{{ $chip->id }}/edit" class="btn btn-ghost btn-xs">Edit</a>
                             <form method="POST" action="/chips/{{ $chip->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                    onclick="return confirm('Are you sure you want to delete this chip?')"
-                                    class="btn btn-ghost btn-xs text-error">
-                                    Delete
-                                </button>
+                                <button type="submit" onclick="return confirm('Are you sure?')"
+                                        class="btn btn-ghost btn-xs text-error">Delete</button>
                             </form>
                         </div>
                     @endcan
                 </div>
+
                 <p class="mt-1">{{ $chip->message }}</p>
+
+        {{-- Reply and Show Replies buttons in a row --}}
+        <div class="flex gap-2 mt-2">
+            <button onclick="toggleReplyForm({{ $chip->id }})" class="btn btn-ghost btn-xs">Reply</button>
+
+            @if($chip->replies->count())
+                <button onclick="toggleReplies({{ $chip->id }})" class="btn btn-ghost btn-xs">
+                    Show Replies ({{ $chip->replies->count() }})
+                </button>
+            @endif
+        </div>
+
+        {{-- Reply form --}}
+        <div id="reply-form-{{ $chip->id }}" class="mt-2 hidden">
+            <form method="POST" action="/chips/{{ $chip->id }}/reply">
+                @csrf
+                <textarea name="message" required class="bg-gray-100! textarea textarea-bordered w-full"></textarea>
+                <button type="submit" class="btn btn-primary btn-sm mt-2">Reply</button>
+            </form>
+        </div>
+
+        {{-- Nested replies --}}
+        @if($chip->replies->count())
+            <div id="replies-{{ $chip->id }}" class="ml-4 mt-2 hidden space-y-2">
+                @foreach($chip->replies as $reply)
+                    <x-chip :chip="$reply" :level="$level + 1" />
+                @endforeach
+            </div>
+        @endif
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function toggleReplyForm(id) {
+    const el = document.getElementById(`reply-form-${id}`);
+    el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+}
+
+function toggleReplies(id) {
+    const el = document.getElementById(`replies-${id}`);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+}
+</script>

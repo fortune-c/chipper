@@ -8,8 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Chip extends Model
 {
     protected $fillable = [
-        'message'
+        'message',
+        'parent_id',
+        'user_id'
     ];
+
+    public function replies() {
+        return $this->hasMany(Chip::class, 'parent_id')
+            ->with('user', 'replies.user');
+    }
+
+    public function parent() {
+        return $this->belongsTo( Chip::class, 'parent_id');
+    }
 
     public function user(): BelongsTo
     {

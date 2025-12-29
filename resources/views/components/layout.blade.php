@@ -10,12 +10,15 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
 </head>
 
 <body class="min-h-screen flex flex-col bg-base-200 font-sans">
     <nav class="navbar bg-base-100">
         <div class="navbar-start">
-            <a href="/" class="btn btn-ghost text-xl">🐦 Chipper</a>
+            <a href="/" class="text-[22px]" style="font-family: 'Bubblegum Sans', sans-serif; font-weight: 400; font-style: normal;">Chipper</a>
         </div>
         <div class="navbar-end gap-2">
             @auth
@@ -49,12 +52,6 @@
     <main class="flex-1 container mx-auto px-4 py-8">
         {{ $slot }}
     </main>
-
-    <footer class="footer footer-center p-5 bg-base-300 text-base-content text-xs">
-        <div>
-            <p>© 2025 Chipper - Built with Laravel and ❤️</p>
-        </div>
-    </footer>
 </body>
 
 </html>

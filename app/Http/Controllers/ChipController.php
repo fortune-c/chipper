@@ -3,21 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chip;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ChipController extends Controller
 {
     use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $chips = Chip::with('user')->latest()->take(10)->get();
+        $chips = Chip::whereNull('parent_id')
+            ->with('user', 'replies.user', 'replies.replies.user')
+            ->latest()
+            ->take(10)
+            ->get();
 
-        return view('home', ['chips' => $chips]);
+        $tasks = Auth::check()
+        ? Auth::user()->tasks()->orderBy('created_at', 'desc')->get()
+        : collect();
+
+        // Example meetings data
+        $meetings = [
+            ['title' => 'Team Standup', 'time' => '9:00 AM'],
+            ['title' => 'Project Sync', 'time' => '11:30 AM'],
+            ['title' => 'Client Call', 'time' => '2:00 PM'],
+            ['title' => 'Retrospective', 'time' => '4:30 PM'],
+            ['title' => 'Design Review', 'time' => '5:30 PM'], // add more if needed
+        ];
+
+        return view('home', compact('chips', 'tasks', 'meetings'));
     }
 
     /**
@@ -88,9 +106,29 @@ class ChipController extends Controller
     public function destroy(Chip $chip)
     {
         $this->authorize('delete', $chip);
-        
+
         $chip->delete();
 
         return redirect('/')->with('success', 'Chip has been deleted!');
+    }
+
+    public function reply(Request $request, Chip $chip)
+    {
+        // // Prevent replies to replies
+        // if ($chip->parent_id !== null) {
+        //     return back()->withErrors('Replies can only be one level deep.');
+        // }
+
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+
+        Chip::create([
+            'user_id' => Auth::id(),
+            'message' => $validated['message'],
+            'parent_id' => $chip->id,
+        ]);
+
+        return back();
     }
 }

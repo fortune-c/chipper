@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('chips', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-            $table->string('message', 280);
+            $table->string('message', 255);
+            $table->foreignId('parent_id')->nullable()->constrained('chips')->onDelete('cascade');
             $table->timestamps();
         });
+
     }
 
     /**

@@ -47,7 +47,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function chips(): HasMany {
+    public function chips(): HasMany
+    {
         return $this->hasMany(Chip::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

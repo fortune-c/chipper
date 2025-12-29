@@ -1,15 +1,16 @@
 # Chipper Together
 
-Chipper Together is a social media app for sharing "Chips" — short posts — with a secure, user-friendly feed. Users can create accounts, post, edit, and delete Chips while enjoying robust security and a smooth experience for connecting with others.
+Chipper Together is a collaborative team forum designed to help members of a company or organization communicate, share ideas, and stay connected. The platform allows team members to post short messages called Chips, respond to colleagues’ posts, and engage in threaded discussions — fostering transparency, collaboration, and quick knowledge sharing.
 
 Repository: [fortune-c/chipper](https://github.com/fortune-c/chipper)
 
 ## Features
-- User registration, login, and authentication
-- Create, edit, delete, and view Chips (short posts)
-- Secure feed and user-friendly UI
-- Basic authorization so users can manage their own Chips
-- Responsive frontend (built with Laravel + common frontend tools)
+- Team-Focused Feed: A secure, centralized place for team members to post updates, questions, or insights.
+- Team-Focused Feed: A secure, centralized place for team members to post updates, questions, or insights.
+- User Accounts & Permissions: Each team member can manage their own posts while respecting company privacy and security.
+- Edit & Delete: Users can update or remove their posts for accuracy or clarity.
+- Task Integration: Track personal or team tasks alongside discussions to stay organized.
+- Intuitive Interface: A clean, user-friendly interface that encourages team engagement.
 
 ## Tech stack
 - Backend: Laravel (PHP)
@@ -36,6 +37,7 @@ Repository: [fortune-c/chipper](https://github.com/fortune-c/chipper)
 3. Install frontend dependencies and build assets
    npm install
    npm run dev
+   composer run dev
    (or `npm run build` for production)
 
 4. Environment
