@@ -1,3 +1,5 @@
+{{-- {{ dd($meetings) }} --}}
+
 <x-layout>
     <x-slot:title>
         Home Feed
@@ -58,7 +60,7 @@
         </div>
 
         <!-- Right Sidebar -->
-        <div class="space-y-4">
+        <div class="space-y-4 my-auto">
             <!-- Tasks Card -->
             <div class="card bg-base-100 shadow">
                 <div class="card-body">
@@ -67,7 +69,8 @@
                     <!-- New Task Form -->
                     <form method="POST" action="{{ route('tasks.store') }}" class="flex mt-2 gap-2">
                         @csrf
-                        <input type="text" name="text" placeholder="New task" class="bg-gray-100! input input-bordered input-sm flex-1" required>
+                        <input type="text" name="text" placeholder="New task"
+                            class="bg-gray-100! input input-bordered input-sm flex-1" required>
                         <button class="btn btn-primary btn-sm">Add</button>
                     </form>
 
@@ -76,7 +79,8 @@
                         @php $displayLimit = 5; @endphp
                         @forelse ($tasks->take($displayLimit) as $task)
                             <li class="flex items-center justify-between">
-                                <form method="POST" action="{{ route('tasks.update', $task) }}" class="flex items-center gap-2">
+                                <form method="POST" action="{{ route('tasks.update', $task) }}"
+                                    class="flex items-center gap-2">
                                     @csrf
                                     @method('PATCH')
                                     <input type="checkbox" name="done" value="1" onchange="this.form.submit()" {{ $task->done ? 'checked' : '' }} class="checkbox">
@@ -97,7 +101,8 @@
                     </ul>
 
                     @if($tasks->count() > $displayLimit)
-                        <button onclick="openTaskModal()" class="btn btn-link btn-sm mt-2">View All ({{ $tasks->count() }})</button>
+                        <button onclick="openTaskModal()" class="btn btn-link btn-sm mt-2">View All
+                            ({{ $tasks->count() }})</button>
                     @endif
                 </div>
             </div>
@@ -110,22 +115,35 @@
             <div class="card bg-base-100 shadow">
                 <div class="card-body">
                     <h2 class="card-title">Meeting Schedules</h2>
-                    <ul class="mt-2 space-y-1">
-                        @foreach($meetings as $meeting)
-                            <li class="flex justify-between">
-                                <span>{{ $meeting['title'] }}</span>
-                                <span class="text-sm text-base-content/60">{{ $meeting['time'] }}</span>
+
+                    <ul class="mt-2 space-y-2">
+                        @foreach($meetings->take(4) as $meeting)
+                            <li class="flex justify-between text-sm">
+                                <span>{{ $meeting->title }}</span>
+                                <span class="text-base-content/60">
+                                    {{ $meeting->starts_at->format('H:i') }}
+                                </span>
                             </li>
                         @endforeach
                     </ul>
 
-                    @if(count($meetings) > 4)
-                        <button onclick="openMeetingModal()" class="btn btn-link btn-sm mt-2">
-                            View All ({{ count($meetings) }})
-                        </button>
-                    @endif
+                    <div class="flex flex-row justify-between">
+                        @if($meetings->count() > 4)
+                            <button onclick="openMeetingModal()" class="btn btn-link btn-sm mt-2">
+                                View All
+                            </button>
+                        @endif
+                        @auth
+                            @if(auth()->user()->isAdmin())
+                                <button onclick="openMeetingCreateModal()" class="btn btn-primary btn-sm mt-2">
+                                    Schedule Meeting
+                                </button>
+                            @endif
+                        @endauth
+                    </div>
                 </div>
             </div>
+            <x-meeting-create-modal />
             <x-meeting-schedule-modal :meetings="$meetings" />
         </div>
     </div>

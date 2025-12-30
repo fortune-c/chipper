@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chip;
+use App\Models\Meeting;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,14 +27,10 @@ class ChipController extends Controller
         ? Auth::user()->tasks()->orderBy('created_at', 'desc')->get()
         : collect();
 
-        // Example meetings data
-        $meetings = [
-            ['title' => 'Team Standup', 'time' => '9:00 AM'],
-            ['title' => 'Project Sync', 'time' => '11:30 AM'],
-            ['title' => 'Client Call', 'time' => '2:00 PM'],
-            ['title' => 'Retrospective', 'time' => '4:30 PM'],
-            ['title' => 'Design Review', 'time' => '5:30 PM'], // add more if needed
-        ];
+        $meetings = Meeting::where('starts_at', '>=', now())
+            ->orderBy('starts_at')
+            ->take(10)
+            ->get();
 
         return view('home', compact('chips', 'tasks', 'meetings'));
     }
