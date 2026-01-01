@@ -22,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'bio',
+        'avatar',
+        'role',
+        'is_admin',
+        'admin_requested',
     ];
 
     /**
@@ -59,6 +64,6 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->is_admin == 1 || $this->role === 'admin';
+        return (bool) $this->is_admin == 1 || $this->role === 'admin';
     }
 }

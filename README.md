@@ -73,3 +73,7 @@ MIT — see LICENSE file for details.
 
 ## Contact
 Project maintained by fortune-c — open issues or pull requests in the repository: https://github.com/fortune-c/chipper
+
+
+Email: fortunate-ceo@chipper.com
+Password: Pchf294Md_3x#DH

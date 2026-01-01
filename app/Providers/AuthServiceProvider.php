@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Task;
+use App\Models\User;
+use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Models\Task;
-use App\Policies\TaskPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -22,5 +23,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        Gate::define('isAdmin', function (User $user) {
+            // Only super admin or CEO can approve requests
+            return $user->super_admin || $user->role === 'CEO';
+        });
     }
 }

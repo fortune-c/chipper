@@ -11,10 +11,16 @@
         <ul class="space-y-3">
             @foreach($notifications as $notification)
                 <li class="border-b pb-2">
-                    <div class="font-semibold">{{ $notification->data['title'] }}</div>
-                    <div class="text-sm text-base-content/60">
-                        {{ \Carbon\Carbon::parse($notification->data['starts_at'])->format('M j, Y @ H:i') }}
+                    <div class="font-semibold">
+                        {{ $notification->data['title'] ?? $notification->data['message'] ?? 'Notification' }}
                     </div>
+
+                    <div class="text-sm text-base-content/60">
+                        {{ isset($notification->data['starts_at']) 
+                            ? \Carbon\Carbon::parse($notification->data['starts_at'])->format('M j, Y @ H:i') 
+                            : '' }}
+                    </div>
+
                     @if(!$notification->read_at)
                         <form method="POST" action="{{ route('notifications.read', $notification->id) }}">
                             @csrf

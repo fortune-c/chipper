@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\Logout;
 use App\Http\Controllers\Auth\Register;
 use App\Http\Controllers\ChipController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -13,47 +16,51 @@ Route::get('/', [ChipController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth')->group(function () {
+
+    // Chips
     Route::post('/chips', [ChipController::class, 'store']);
     Route::get('/chips/{chip}/edit', [ChipController::class, 'edit']);
     Route::put('/chips/{chip}', [ChipController::class, 'update']);
     Route::delete('/chips/{chip}', [ChipController::class, 'destroy']);
     Route::post('/chips/{chip}/reply', [ChipController::class, 'reply']);
 
+    // Tasks
     Route::resource('tasks', TaskController::class)
         ->only(['index', 'store', 'update', 'destroy']);
 
+    // Meetings
     Route::post('/meetings', [MeetingController::class, 'store'])->name('meetings.store');
 
+    // Notifications
     Route::post('/notifications/{notification}/read', function ($notificationId) {
         $user = Auth::user();
-        if ($user) {
-            $notification = $user->notifications()->find($notificationId);
-            if ($notification) {
-                $notification->markAsRead();
-            }
-        }
+        $notification = $user?->notifications()->find($notificationId);
+        $notification?->markAsRead();
         return back();
     })->name('notifications.read');
 
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// Registration routes
-Route::view('/register', 'auth.register')
-    ->middleware('guest')
-    ->name('register');
+// Admin approval routes
+Route::middleware(['auth', 'can:isAdmin'])->group(function () {
+    Route::post('/admin/approve/{user}', [AdminUserController::class, 'approve'])->name('admin.approve');
+    Route::patch('/admin/reject/{user}', [AdminUserController::class, 'reject'])->name('admin.reject');
+});
 
-Route::post('/register', Register::class)
-    ->middleware('guest');
 
-// Login routes
-Route::view('/login', 'auth.login')
-    ->middleware('guest')
-    ->name('login');
+// Auth routes
+Route::view('/register', 'auth.register')->middleware('guest')->name('register');
+Route::post('/register', Register::class)->middleware('guest');
+Route::view('/login', 'auth.login')->middleware('guest')->name('login');
+Route::post('/login', Login::class)->middleware('guest');
+Route::post('/logout', Logout::class)->middleware('auth')->name('logout');
 
-Route::post('/login', Login::class)
-    ->middleware('guest');
-
-// Logout route
-Route::post('/logout', Logout::class)
-    ->middleware('auth')
-    ->name('logout');
+Route::post('/notifications/clear', function () {
+    $user = Auth::user();
+    $user->unreadNotifications->markAsRead();
+    return back();
+})->middleware('auth')->name('notifications.clear');
