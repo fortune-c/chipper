@@ -5,7 +5,7 @@
         <div class="card-body space-y-4">
             <h2 class="card-title">Edit Profile</h2>
 
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 @method('PATCH')
 
