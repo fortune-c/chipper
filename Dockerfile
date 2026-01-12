@@ -52,6 +52,11 @@ COPY . .
 # Run composer scripts now that all files are present
 RUN composer run-script post-autoload-dump
 
+# Create SQLite database and run migrations
+RUN touch /var/www/html/database/database.sqlite && \
+    php artisan key:generate --force && \
+    php artisan migrate --force
+
 # Configure Apache to use PORT environment variable and set DocumentRoot
 COPY <<EOF /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:\${PORT}>
@@ -69,7 +74,7 @@ Listen \${PORT}
 EOF
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 # Expose port (Render uses $PORT environment variable)
 ENV PORT=10000
