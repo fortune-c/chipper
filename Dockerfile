@@ -4,7 +4,7 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -14,7 +14,20 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     curl \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd xml zip
+    libicu-dev \
+    libssl-dev \
+    && docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    xml \
+    zip \
+    intl \
+    opcache \
+    sockets
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -25,8 +38,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy project files
 COPY . .
 
+# Clear any existing vendor folder (optional)
+RUN rm -rf vendor
+
 # Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -35,12 +51,9 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 ENV PORT 10000
 EXPOSE 10000
 
-# Set Laravel environment variables (Render will override with env)
+# Laravel environment variables (Render will override)
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 
-# Run Laravel migrations (optional, can be handled in Render dashboard)
-# RUN php artisan migrate --force
-
-# Start Apache in foreground
+# Start Apache
 CMD ["apache2-foreground"]
