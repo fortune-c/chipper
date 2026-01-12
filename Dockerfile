@@ -1,5 +1,5 @@
 # Use official PHP image with Apache
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Set working directory
 WORKDIR /var/www/html
@@ -16,8 +16,11 @@ RUN apt-get update && apt-get install -y \
     curl \
     libicu-dev \
     libssl-dev \
+    sqlite3 \
+    libsqlite3-dev \
     && docker-php-ext-install \
     pdo_mysql \
+    pdo_sqlite \
     mbstring \
     exif \
     pcntl \
@@ -27,7 +30,9 @@ RUN apt-get update && apt-get install -y \
     zip \
     intl \
     opcache \
-    sockets
+    sockets \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -35,20 +40,23 @@ RUN a2enmod rewrite
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project files
-COPY . .
-
-# Clear any existing vendor folder (optional)
-RUN rm -rf vendor
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
 
 # Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
+
+# Copy rest of project files
+COPY . .
+
+# Run composer scripts now that all files are present
+RUN composer run-script post-autoload-dump
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port (Render uses $PORT environment variable)
-ENV PORT 10000
+ENV PORT=10000
 EXPOSE 10000
 
 # Laravel environment variables (Render will override)
