@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     sqlite3 \
     libsqlite3-dev \
+    nodejs \
+    npm \
     && docker-php-ext-install \
     pdo_mysql \
     pdo_sqlite \
@@ -48,6 +50,9 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-d
 
 # Copy rest of project files
 COPY . .
+
+# Install npm dependencies and build assets
+RUN npm install && npm run build
 
 # Run composer scripts now that all files are present
 RUN composer run-script post-autoload-dump
