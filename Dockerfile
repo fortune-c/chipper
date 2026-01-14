@@ -83,8 +83,11 @@ COPY <<EOF /etc/apache2/ports.conf
 Listen \${PORT}
 EOF
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+# Set permissions and create storage link
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database && \
+    chmod -R 755 /var/www/html/storage && \
+    mkdir -p /var/www/html/storage/app/public/chips && \
+    php artisan storage:link
 
 # Expose port (Render uses $PORT environment variable)
 ENV PORT=10000
