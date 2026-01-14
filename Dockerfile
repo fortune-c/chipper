@@ -63,6 +63,10 @@ RUN cp .env.example .env && \
     php artisan key:generate --force && \
     php artisan migrate --force
 
+# Set production environment variables
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+
 # Configure Apache to use PORT environment variable and set DocumentRoot
 COPY <<EOF /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:\${PORT}>
