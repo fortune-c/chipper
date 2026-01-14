@@ -52,8 +52,9 @@ COPY . .
 # Run composer scripts now that all files are present
 RUN composer run-script post-autoload-dump
 
-# Create SQLite database and run migrations
-RUN touch /var/www/html/database/database.sqlite && \
+# Create .env file and SQLite database, then run migrations
+RUN cp .env.example .env && \
+    touch /var/www/html/database/database.sqlite && \
     php artisan key:generate --force && \
     php artisan migrate --force
 
