@@ -48,6 +48,12 @@ class ChipController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('Store request received', [
+            'has_media' => $request->hasFile('media'),
+            'all_files' => $request->allFiles(),
+            'media_count' => $request->file('media') ? count($request->file('media')) : 0
+        ]);
+
         $validated = $request->validate([
             'message' => 'required|string|max:255',
             'media.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,pdf,doc,docx,xls,xlsx|max:10240',
@@ -57,6 +63,7 @@ class ChipController extends Controller
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
                 $path = $file->store('chips', 'public');
+                \Log::info('File stored', ['path' => $path]);
                 $media[] = [
                     'path' => $path,
                     'type' => $file->getMimeType(),

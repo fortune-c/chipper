@@ -189,19 +189,22 @@
         });
 
         function handleFiles(files) {
-            const dt = new DataTransfer();
-            
             for (let file of files) {
                 if (file.size > 10 * 1024 * 1024) {
                     alert(`${file.name} is too large. Max size is 10MB.`);
                     continue;
                 }
                 selectedFiles.push(file);
-                dt.items.add(file);
             }
             
-            mediaInput.files = dt.files;
+            syncFilesToInput();
             updatePreview();
+        }
+
+        function syncFilesToInput() {
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            mediaInput.files = dt.files;
         }
 
         function updatePreview() {
@@ -240,9 +243,7 @@
 
         function removeFile(index) {
             selectedFiles.splice(index, 1);
-            const dt = new DataTransfer();
-            selectedFiles.forEach(file => dt.items.add(file));
-            mediaInput.files = dt.files;
+            syncFilesToInput();
             updatePreview();
         }
     </script>
