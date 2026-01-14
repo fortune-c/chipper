@@ -48,15 +48,28 @@ class ChipController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
         $validated = $request->validate([
             'message' => 'required|string|max:255',
+            'media.*' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,pdf,doc,docx,xls,xlsx|max:10240',
         ]);
 
-        // Use the authenticated user
-        Auth::user()->chips()->create($validated);
+        $media = [];
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $path = $file->store('chips', 'public');
+                $media[] = [
+                    'path' => $path,
+                    'type' => $file->getMimeType(),
+                    'name' => $file->getClientOriginalName(),
+                ];
+            }
+        }
 
-        // Redirect back to the feed
+        Auth::user()->chips()->create([
+            'message' => $validated['message'],
+            'media' => $media,
+        ]);
+
         return redirect('/')->with('success', 'Chip has been posted!');
     }
 

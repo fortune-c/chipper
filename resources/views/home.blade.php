@@ -13,7 +13,7 @@
             <!-- Chip Form -->
             <div class="card bg-base-100 shadow mt-4">
                 <div class="card-body">
-                    <form method="POST" action="/chips">
+                    <form method="POST" action="/chips" enctype="multipart/form-data" id="chipForm">
                         @csrf
                         <div class="form-control w-full">
                             <textarea name="message" placeholder="What's on your mind?"
@@ -26,6 +26,19 @@
                                     <span class="label-text-alt text-error">{{ $message }}</span>
                                 </div>
                             @enderror
+                        </div>
+
+                        <!-- Media Upload Area -->
+                        <div class="mt-4">
+                            <div id="dropZone" class="border-2 border-dashed border-base-300 rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer">
+                                <input type="file" name="media[]" id="mediaInput" multiple accept="image/*,video/*,.gif,.pdf,.doc,.docx,.xls,.xlsx" class="hidden">
+                                <svg class="mx-auto h-8 w-8 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                                <p class="mt-2 text-sm text-base-content/70">Drop files here or click to upload</p>
+                                <p class="text-xs text-base-content/50 mt-1">Images, videos, GIFs, PDFs, documents (max 10MB each)</p>
+                            </div>
+                            <div id="previewArea" class="mt-3 grid grid-cols-4 gap-2"></div>
                         </div>
 
                         <div class="mt-4 flex items-center justify-end">
@@ -147,4 +160,90 @@
             <x-meeting-schedule-modal :meetings="$meetings" />
         </div>
     </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const mediaInput = document.getElementById('mediaInput');
+        const previewArea = document.getElementById('previewArea');
+        let selectedFiles = [];
+
+        dropZone.addEventListener('click', () => mediaInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-primary', 'bg-primary/5');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-primary', 'bg-primary/5');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary', 'bg-primary/5');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        mediaInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const dt = new DataTransfer();
+            
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`${file.name} is too large. Max size is 10MB.`);
+                    continue;
+                }
+                selectedFiles.push(file);
+                dt.items.add(file);
+            }
+            
+            mediaInput.files = dt.files;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            previewArea.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'relative group';
+                
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'w-full h-20 object-cover rounded';
+                    preview.appendChild(img);
+                } else if (file.type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.src = URL.createObjectURL(file);
+                    video.className = 'w-full h-20 object-cover rounded';
+                    preview.appendChild(video);
+                } else {
+                    const icon = document.createElement('div');
+                    icon.className = 'w-full h-20 bg-base-200 rounded flex items-center justify-center';
+                    icon.innerHTML = `<svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`;
+                    preview.appendChild(icon);
+                }
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'absolute top-1 right-1 btn btn-circle btn-xs btn-error opacity-0 group-hover:opacity-100 transition-opacity';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => removeFile(index);
+                preview.appendChild(removeBtn);
+                
+                previewArea.appendChild(preview);
+            });
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            mediaInput.files = dt.files;
+            updatePreview();
+        }
+    </script>
 </x-layout>

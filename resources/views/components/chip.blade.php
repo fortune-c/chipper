@@ -46,6 +46,26 @@
 
                 <p class="mt-1">{{ $chip->message }}</p>
 
+                <!-- Media Display -->
+                @if($chip->media && count($chip->media) > 0)
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        @foreach($chip->media as $media)
+                            @if(str_starts_with($media['type'], 'image/'))
+                                <img src="{{ Storage::url($media['path']) }}" alt="Uploaded image" class="rounded-lg w-full object-cover max-h-64 cursor-pointer" onclick="openImageModal('{{ Storage::url($media['path']) }}')">
+                            @elseif(str_starts_with($media['type'], 'video/'))
+                                <video controls class="rounded-lg w-full max-h-64">
+                                    <source src="{{ Storage::url($media['path']) }}" type="{{ $media['type'] }}">
+                                </video>
+                            @else
+                                <a href="{{ Storage::url($media['path']) }}" target="_blank" class="flex items-center gap-2 p-3 bg-base-200 rounded-lg hover:bg-base-300 transition">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    <span class="text-sm truncate">{{ $media['name'] }}</span>
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+
         {{-- Reply and Show Replies buttons in a row --}}
         <div class="flex gap-2 mt-2">
             <button onclick="toggleReplyForm({{ $chip->id }})" class="btn btn-ghost btn-xs">Reply</button>
@@ -89,5 +109,13 @@ function toggleReplies(id) {
     const el = document.getElementById(`replies-${id}`);
     if (!el) return;
     el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+}
+
+function openImageModal(src) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4';
+    modal.onclick = () => modal.remove();
+    modal.innerHTML = `<img src="${src}" class="max-w-full max-h-full rounded-lg">`;
+    document.body.appendChild(modal);
 }
 </script>

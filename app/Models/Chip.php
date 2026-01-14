@@ -10,7 +10,12 @@ class Chip extends Model
     protected $fillable = [
         'message',
         'parent_id',
-        'user_id'
+        'user_id',
+        'media'
+    ];
+
+    protected $casts = [
+        'media' => 'array',
     ];
 
     public function replies() {
