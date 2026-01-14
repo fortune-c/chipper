@@ -165,7 +165,48 @@
         const dropZone = document.getElementById('dropZone');
         const mediaInput = document.getElementById('mediaInput');
         const previewArea = document.getElementById('previewArea');
+        const chipForm = document.getElementById('chipForm');
         let selectedFiles = [];
+
+        // Prevent form from clearing files on submit
+        chipForm.addEventListener('submit', (e) => {
+            if (selectedFiles.length > 0) {
+                e.preventDefault();
+                const formData = new FormData(chipForm);
+                
+                // Remove any existing media files from FormData
+                formData.delete('media[]');
+                
+                // Add our selected files
+                selectedFiles.forEach(file => {
+                    formData.append('media[]', file);
+                });
+                
+                // Submit via fetch
+                fetch('/chips', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        return response.json().then(data => {
+                            alert('Error: ' + (data.message || 'Upload failed'));
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    alert('Upload failed. Check console for details.');
+                });
+            }
+        });
 
         dropZone.addEventListener('click', () => mediaInput.click());
 
@@ -185,7 +226,9 @@
         });
 
         mediaInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+            }
         });
 
         function handleFiles(files) {
@@ -197,14 +240,7 @@
                 selectedFiles.push(file);
             }
             
-            syncFilesToInput();
             updatePreview();
-        }
-
-        function syncFilesToInput() {
-            const dt = new DataTransfer();
-            selectedFiles.forEach(file => dt.items.add(file));
-            mediaInput.files = dt.files;
         }
 
         function updatePreview() {
@@ -243,7 +279,6 @@
 
         function removeFile(index) {
             selectedFiles.splice(index, 1);
-            syncFilesToInput();
             updatePreview();
         }
     </script>
