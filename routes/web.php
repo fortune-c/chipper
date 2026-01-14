@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ChipController::class, 'index']);
 
+// Serve storage files (for environments where symlink doesn't work)
+Route::get('/storage/{path}', function ($path) {
+    $file = storage_path('app/public/' . $path);
+    if (!file_exists($file)) {
+        abort(404);
+    }
+    return response()->file($file);
+})->where('path', '.*');
+
 // Protected routes
 Route::middleware('auth')->group(function () {
 
