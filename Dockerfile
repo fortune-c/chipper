@@ -75,6 +75,17 @@ COPY <<EOF /etc/apache2/sites-available/000-default.conf
         AllowOverride All
         Require all granted
         DirectoryIndex index.php
+        
+        # Ensure storage requests go through Laravel
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^ index.php [L]
+    </Directory>
+    
+    # Prevent direct access to storage directory
+    <Directory /var/www/html/storage>
+        Require all denied
     </Directory>
 </VirtualHost>
 EOF
