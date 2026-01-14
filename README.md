@@ -18,15 +18,13 @@ To create the ultimate internal communication platform that combines the best as
 - **Task Integration**: Track personal or team tasks alongside discussions to stay organized
 - **Intuitive Interface**: A clean, user-friendly interface that encourages team engagement
 - **Threaded Discussions**: Organized conversation threads for better context and follow-up
-
-## Roadmap & Future Features
-
-### Rich Media Support
 - **Image Uploads**: Share screenshots, diagrams, and visual content directly in chips
 - **Video Sharing**: Upload and embed short video clips for demonstrations and presentations
 - **GIF Support**: Add animated GIFs for enhanced expression and team culture building
 - **File Attachments**: Share documents, spreadsheets, and other work files
 - **Drag & Drop Interface**: Seamless media upload experience
+
+## Roadmap & Future Features
 
 ### Real-Time Communication
 - **Private Messaging**: Direct one-on-one conversations between team members

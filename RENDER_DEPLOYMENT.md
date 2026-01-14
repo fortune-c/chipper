@@ -25,7 +25,7 @@ DB_PASSWORD=your-db-password
 
 ## Build Command
 ```bash
-composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan storage:link
+composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache && mkdir -p storage/app/public/chips && chmod -R 755 storage && php artisan storage:link
 ```
 
 ## Start Command
@@ -38,3 +38,5 @@ php artisan serve --host=0.0.0.0 --port=$PORT
 1. The app now automatically detects when it's behind a proxy (like Render) and forces HTTPS
 2. Make sure `FILESYSTEM_DISK=public` is set for image uploads to work
 3. Run migrations manually after first deployment: `php artisan migrate --force`
+4. A fallback route serves storage files directly through Laravel if symlinks don't work on Render
+5. Ensure storage directories have proper permissions (755) during build
