@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layout>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white rounded-lg shadow h-[calc(100vh-12rem)] flex flex-col">
             <!-- Header -->
@@ -103,4 +103,4 @@
         const container = document.getElementById('messagesContainer');
         container.scrollTop = container.scrollHeight;
     </script>
-</x-app-layout>
+</x-layout>
