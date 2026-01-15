@@ -110,20 +110,35 @@
         container.scrollTop = container.scrollHeight;
 
         // Auto-refresh messages every 3 seconds
+        let lastMessageId = {{ $messages->first()->id ?? 0 }};
+        
         setInterval(() => {
-            fetch(window.location.href)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newMessages = doc.getElementById('messagesContainer').innerHTML;
-                    const currentMessages = document.getElementById('messagesContainer').innerHTML;
-                    
-                    if (newMessages !== currentMessages) {
-                        document.getElementById('messagesContainer').innerHTML = newMessages;
+            fetch(`{{ route('conversations.show', $conversation) }}?ajax=1&after=${lastMessageId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.messages && data.messages.length > 0) {
+                        data.messages.forEach(msg => {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = `flex ${msg.is_own ? 'justify-end' : 'justify-start'}`;
+                            messageDiv.innerHTML = `
+                                <div class="max-w-xs lg:max-w-md">
+                                    ${!msg.is_own ? `<p class="text-xs text-gray-600 mb-1">${msg.user_name}</p>` : ''}
+                                    <div class="rounded-lg p-3 ${msg.is_own ? 'bg-blue-500 text-white' : 'bg-gray-200'}">
+                                        ${msg.body ? `<p>${msg.body}</p>` : ''}
+                                        ${msg.file_path && msg.type === 'image' ? `<img src="/storage/${msg.file_path}" class="max-w-full rounded">` : ''}
+                                        ${msg.file_path && msg.type === 'voice' ? `<audio controls src="/storage/${msg.file_path}" class="max-w-full"></audio>` : ''}
+                                        ${msg.file_path && msg.type === 'video' ? `<video controls src="/storage/${msg.file_path}" class="max-w-full"></video>` : ''}
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">${msg.time}</p>
+                                </div>
+                            `;
+                            container.appendChild(messageDiv);
+                            lastMessageId = msg.id;
+                        });
                         container.scrollTop = container.scrollHeight;
                     }
-                });
+                })
+                .catch(err => console.error('Error fetching messages:', err));
         }, 3000);
     </script>
 

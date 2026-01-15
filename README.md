@@ -11,27 +11,6 @@ Chipper Together aims to bridge the gap between formal communication tools and c
 ### Vision
 To create the ultimate internal communication platform that combines the best aspects of social media engagement with enterprise-grade security and productivity features.
 
-## Current Features
-- **Team-Focused Feed**: A secure, centralized place for team members to post updates, questions, or insights
-- **User Accounts & Permissions**: Each team member can manage their own posts while respecting company privacy and security
-- **Edit & Delete**: Users can update or remove their posts for accuracy or clarity
-- **Task Integration**: Track personal or team tasks alongside discussions to stay organized
-- **Intuitive Interface**: A clean, user-friendly interface that encourages team engagement
-- **Threaded Discussions**: Organized conversation threads for better context and follow-up
-- **Image Uploads**: Share screenshots, diagrams, and visual content directly in chips
-- **Video Sharing**: Upload and embed short video clips for demonstrations and presentations
-- **GIF Support**: Add animated GIFs for enhanced expression and team culture building
-- **File Attachments**: Share documents, spreadsheets, and other work files
-- **Drag & Drop Interface**: Seamless media upload experience
-- **Private Messaging**: ✨ Direct one-on-one conversations between team members
-- **Group Chats**: ✨ Create private group discussions for specific projects or teams
-- **Voice Messages**: ✨ Quick audio clips for more personal communication
-- **Video Calls**: ✨ Integrated video conferencing for instant face-to-face meetings
-- **Audio Calls**: ✨ Voice-only calls for quick discussions
-- **Screen Sharing**: ✨ Share screens during video calls for collaborative work
-
-> ✨ **New!** Real-time communication features have been implemented. See [QUICK_START.md](QUICK_START.md) for usage guide.
-
 ## Roadmap & Future Features
 
 ### Advanced Collaboration

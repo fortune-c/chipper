@@ -21,9 +21,32 @@ class ConversationController extends Controller
         return view('conversations.index', compact('conversations'));
     }
 
-    public function show(Conversation $conversation)
+    public function show(Request $request, Conversation $conversation)
     {
         $this->authorize('view', $conversation);
+
+        // Handle AJAX request for new messages
+        if ($request->ajax() || $request->has('ajax')) {
+            $afterId = $request->get('after', 0);
+            $newMessages = $conversation->messages()
+                ->where('id', '>', $afterId)
+                ->with('user')
+                ->orderBy('id', 'asc')
+                ->get()
+                ->map(function($msg) {
+                    return [
+                        'id' => $msg->id,
+                        'body' => $msg->body,
+                        'type' => $msg->type,
+                        'file_path' => $msg->file_path,
+                        'user_name' => $msg->user->name,
+                        'is_own' => $msg->user_id === auth()->id(),
+                        'time' => $msg->created_at->format('g:i A'),
+                    ];
+                });
+
+            return response()->json(['messages' => $newMessages]);
+        }
 
         $messages = $conversation->messages()
             ->with('user')
