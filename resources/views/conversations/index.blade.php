@@ -21,8 +21,15 @@
                                     {{ $conversation->participants->where('id', '!=', auth()->id())->first()->name ?? 'Unknown' }}
                                 @endif
                             </h3>
+                            <p class="text-xs text-gray-500">
+                                @if($conversation->type === 'group')
+                                    {{ $conversation->participants->pluck('name')->join(', ') }}
+                                @else
+                                    Private conversation
+                                @endif
+                            </p>
                             @if($conversation->latestMessage)
-                                <p class="text-sm text-gray-600 truncate">
+                                <p class="text-sm text-gray-600 truncate mt-1">
                                     {{ $conversation->latestMessage->user->name }}: 
                                     {{ $conversation->latestMessage->body ?? '[' . ucfirst($conversation->latestMessage->type) . ']' }}
                                 </p>
@@ -60,11 +67,12 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-2">Participants</label>
-                    <select name="participants[]" multiple class="w-full border rounded px-3 py-2" size="5">
+                    <select name="participants[]" multiple required class="w-full border rounded px-3 py-2" size="5">
                         @foreach(\App\Models\User::where('id', '!=', auth()->id())->get() as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
+                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple users</p>
                 </div>
                 <div class="flex gap-2">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
