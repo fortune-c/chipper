@@ -281,5 +281,42 @@
             selectedFiles.splice(index, 1);
             updatePreview();
         }
+
+        // Auto-refresh chips every 5 seconds
+        let lastChipId = {{ $chips->first()->id ?? 0 }};
+        
+        setInterval(() => {
+            fetch(`/?ajax=1&after=${lastChipId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.chips && data.chips.length > 0) {
+                        const container = document.querySelector('.space-y-6');
+                        data.chips.forEach(chip => {
+                            const chipDiv = document.createElement('div');
+                            chipDiv.innerHTML = chip.html;
+                            container.insertBefore(chipDiv.firstElementChild, container.firstChild);
+                            lastChipId = chip.id;
+                        });
+                    }
+                })
+                .catch(err => console.error('Error fetching chips:', err));
+        }, 5000);
+
+        // Auto-refresh tasks every 5 seconds
+        @auth
+        setInterval(() => {
+            fetch('/tasks?ajax=1')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.tasks) {
+                        const taskList = document.querySelector('.space-y-2');
+                        if (taskList) {
+                            taskList.innerHTML = data.html;
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching tasks:', err));
+        }, 5000);
+        @endauth
     </script>
 </x-layout>

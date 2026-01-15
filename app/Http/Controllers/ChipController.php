@@ -15,8 +15,26 @@ class ChipController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Handle AJAX request for new chips
+        if ($request->ajax() || $request->has('ajax')) {
+            $afterId = $request->get('after', 0);
+            $newChips = Chip::whereNull('parent_id')
+                ->where('id', '>', $afterId)
+                ->with('user')
+                ->orderBy('id', 'asc')
+                ->get()
+                ->map(function($chip) {
+                    return [
+                        'id' => $chip->id,
+                        'html' => view('components.chip', ['chip' => $chip])->render()
+                    ];
+                });
+
+            return response()->json(['chips' => $newChips]);
+        }
+
         $chips = Chip::whereNull('parent_id')
             ->with('user', 'replies.user', 'replies.replies.user')
             ->latest()
