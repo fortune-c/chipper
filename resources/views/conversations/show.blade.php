@@ -108,6 +108,23 @@
         // Auto-scroll to bottom
         const container = document.getElementById('messagesContainer');
         container.scrollTop = container.scrollHeight;
+
+        // Auto-refresh messages every 3 seconds
+        setInterval(() => {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newMessages = doc.getElementById('messagesContainer').innerHTML;
+                    const currentMessages = document.getElementById('messagesContainer').innerHTML;
+                    
+                    if (newMessages !== currentMessages) {
+                        document.getElementById('messagesContainer').innerHTML = newMessages;
+                        container.scrollTop = container.scrollHeight;
+                    }
+                });
+        }, 3000);
     </script>
 
     <!-- Add Participants Modal -->
