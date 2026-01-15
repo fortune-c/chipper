@@ -42,7 +42,8 @@
                 </a>
             @empty
                 <div class="p-8 text-center text-gray-500">
-                    No conversations yet. Start a new one!
+                    <p>No conversations yet. Start a new one!</p>
+                    <p class="text-xs mt-2">Total conversations: {{ Auth::user()->conversations()->count() }}</p>
                 </div>
             @endforelse
         </div>

@@ -13,7 +13,7 @@ class ConversationController extends Controller
     {
         $conversations = Auth::user()->conversations()
             ->with(['participants', 'latestMessage.user'])
-            ->latest('updated_at')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         return view('conversations.index', compact('conversations'));
@@ -49,7 +49,7 @@ class ConversationController extends Controller
         $participants = array_unique(array_merge($validated['participants'], [Auth::id()]));
         $conversation->participants()->attach($participants);
 
-        return redirect()->route('conversations.show', $conversation);
+        return redirect()->route('conversations.index')->with('success', 'Conversation created successfully');
     }
 
     public function createPrivate(User $user)
