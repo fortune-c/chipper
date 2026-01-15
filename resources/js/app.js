@@ -1,5 +1,4 @@
 import "./bootstrap";
-import "./echo";
 
 document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.getElementById("messageTextarea");
