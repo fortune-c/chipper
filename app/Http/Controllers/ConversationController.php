@@ -37,7 +37,7 @@ class ConversationController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:private,group',
-            'name' => 'required_if:type,group|string|max:255',
+            'name' => 'nullable|required_if:type,group|string|max:255',
             'participants' => 'required|array|min:1',
             'participants.*' => 'exists:users,id',
         ]);

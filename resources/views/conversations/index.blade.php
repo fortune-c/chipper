@@ -64,7 +64,7 @@
                 </div>
                 <div id="groupNameField" class="mb-4 hidden">
                     <label class="block text-sm font-medium mb-2">Group Name</label>
-                    <input type="text" name="name" class="w-full border rounded px-3 py-2">
+                    <input type="text" name="name" id="groupNameInput" class="w-full border rounded px-3 py-2">
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-2">Participants</label>
@@ -90,7 +90,9 @@
 
     <script>
         document.getElementById('conversationType').addEventListener('change', function() {
-            document.getElementById('groupNameField').classList.toggle('hidden', this.value !== 'group');
+            const isGroup = this.value === 'group';
+            document.getElementById('groupNameField').classList.toggle('hidden', !isGroup);
+            document.getElementById('groupNameInput').required = isGroup;
         });
     </script>
 </x-layout>
