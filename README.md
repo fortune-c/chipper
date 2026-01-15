@@ -23,16 +23,16 @@ To create the ultimate internal communication platform that combines the best as
 - **GIF Support**: Add animated GIFs for enhanced expression and team culture building
 - **File Attachments**: Share documents, spreadsheets, and other work files
 - **Drag & Drop Interface**: Seamless media upload experience
+- **Private Messaging**: ✨ Direct one-on-one conversations between team members
+- **Group Chats**: ✨ Create private group discussions for specific projects or teams
+- **Voice Messages**: ✨ Quick audio clips for more personal communication
+- **Video Calls**: ✨ Integrated video conferencing for instant face-to-face meetings
+- **Audio Calls**: ✨ Voice-only calls for quick discussions
+- **Screen Sharing**: ✨ Share screens during video calls for collaborative work
+
+> ✨ **New!** Real-time communication features have been implemented. See [QUICK_START.md](QUICK_START.md) for usage guide.
 
 ## Roadmap & Future Features
-
-### Real-Time Communication
-- **Private Messaging**: Direct one-on-one conversations between team members
-- **Group Chats**: Create private group discussions for specific projects or teams
-- **Voice Messages**: Quick audio clips for more personal communication
-- **Video Calls**: Integrated video conferencing for instant face-to-face meetings
-- **Audio Calls**: Voice-only calls for quick discussions
-- **Screen Sharing**: Share screens during video calls for collaborative work
 
 ### Advanced Collaboration
 - **Live Reactions**: Real-time emoji reactions to posts and messages
@@ -41,6 +41,14 @@ To create the ultimate internal communication platform that combines the best as
 - **Polls & Surveys**: Gather team feedback and make collective decisions
 - **Event Scheduling**: Coordinate meetings and team events
 - **Integration Hub**: Connect with popular tools (Slack, Teams, Jira, GitHub, etc.)
+
+### Messaging Enhancements
+- **Typing Indicators**: See when someone is typing
+- **Read Receipts**: Know when messages are read
+- **Message Search**: Find old messages quickly
+- **Emoji Reactions**: React to messages with emojis
+- **Message Threading**: Reply to specific messages
+- **WebRTC Integration**: Full video/audio calling with Twilio, Agora, or Daily.co
 
 ## Tech stack
 - Backend: Laravel (PHP)

@@ -26,6 +26,11 @@
 
             <div class="navbar-end gap-2">
                 @auth
+                    {{-- Messages Link --}}
+                    <a href="{{ route('conversations.index') }}" class="btn btn-ghost btn-sm">
+                        💬 Messages
+                    </a>
+
                     @php
                         $user = auth()->user();
                         $unreadNotifications = $user ? $user->unreadNotifications : collect();

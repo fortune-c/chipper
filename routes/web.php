@@ -4,8 +4,11 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\Logout;
 use App\Http\Controllers\Auth\Register;
+use App\Http\Controllers\CallController;
 use App\Http\Controllers\ChipController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Notifications\Notification;
@@ -52,6 +55,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Conversations & Messaging
+    Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::post('/conversations', [ConversationController::class, 'store'])->name('conversations.store');
+    Route::post('/conversations/private/{user}', [ConversationController::class, 'createPrivate'])->name('conversations.private');
+    Route::post('/conversations/{conversation}/participants', [ConversationController::class, 'addParticipants'])->name('conversations.participants');
+    
+    // Messages
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+    
+    // Calls
+    Route::post('/conversations/{conversation}/calls', [CallController::class, 'initiate'])->name('calls.initiate');
+    Route::post('/calls/{call}/answer', [CallController::class, 'answer'])->name('calls.answer');
+    Route::post('/calls/{call}/end', [CallController::class, 'end'])->name('calls.end');
+    Route::post('/calls/{call}/screen-share', [CallController::class, 'toggleScreenShare'])->name('calls.screen-share');
 });
 
 // Admin approval routes
