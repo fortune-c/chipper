@@ -13,6 +13,12 @@
                     </h2>
                     <p class="text-sm text-gray-600">
                         {{ $conversation->participants->count() }} participants
+                        @if($conversation->type === 'group')
+                            <button onclick="document.getElementById('addParticipantsModal').classList.remove('hidden')" 
+                                    class="text-blue-500 hover:underline ml-2">
+                                + Add
+                            </button>
+                        @endif
                     </p>
                 </div>
                 <div class="flex gap-2">
@@ -103,4 +109,34 @@
         const container = document.getElementById('messagesContainer');
         container.scrollTop = container.scrollHeight;
     </script>
+
+    <!-- Add Participants Modal -->
+    @if($conversation->type === 'group')
+    <div id="addParticipantsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 class="text-xl font-bold mb-4">Add Participants</h2>
+            <form action="{{ route('conversations.participants', $conversation) }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Select Users</label>
+                    <select name="participants[]" multiple class="w-full border rounded px-3 py-2" size="8">
+                        @foreach(\App\Models\User::whereNotIn('id', $conversation->participants->pluck('id'))->get() as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Add
+                    </button>
+                    <button type="button" onclick="document.getElementById('addParticipantsModal').classList.add('hidden')" 
+                            class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 </x-layout>
