@@ -6,9 +6,11 @@ use App\Models\Conversation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ConversationController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         $conversations = Auth::user()->conversations()

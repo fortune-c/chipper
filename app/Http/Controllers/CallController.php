@@ -7,9 +7,11 @@ use App\Models\Call;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CallController extends Controller
 {
+    use AuthorizesRequests;
     public function initiate(Request $request, Conversation $conversation)
     {
         $this->authorize('view', $conversation);

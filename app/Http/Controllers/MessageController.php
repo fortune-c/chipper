@@ -8,9 +8,11 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MessageController extends Controller
 {
+    use AuthorizesRequests;
     public function store(Request $request, Conversation $conversation)
     {
         $this->authorize('view', $conversation);
