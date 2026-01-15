@@ -15,7 +15,7 @@
                         {{ $conversation->participants->count() }} participants
                         @if($conversation->type === 'group')
                             <button onclick="document.getElementById('addParticipantsModal').classList.remove('hidden')" 
-                                    class="text-blue-500 hover:underline ml-2">
+                                    class="text-gray-800 hover:underline ml-2">
                                 + Add
                             </button>
                         @endif
@@ -39,7 +39,7 @@
                             @if($message->user_id !== auth()->id())
                                 <p class="text-xs text-gray-600 mb-1">{{ $message->user->name }}</p>
                             @endif
-                            <div class="rounded-lg p-3 {{ $message->user_id === auth()->id() ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
+                            <div class="rounded-lg p-3 {{ $message->user_id === auth()->id() ? 'bg-gray-800 text-white' : 'bg-gray-200' }}">
                                 @if($message->type === 'text')
                                     <p>{{ $message->body }}</p>
                                 @elseif($message->type === 'voice')
@@ -66,8 +66,8 @@
                         📎
                     </button>
                     <input type="text" name="body" placeholder="Type a message..." 
-                           class="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                           class="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <button type="submit" class="bg-gray-800 text-white px-6 py-2 rounded hover:bg-gray-900">
                         Send
                     </button>
                 </form>
@@ -123,7 +123,7 @@
                             messageDiv.innerHTML = `
                                 <div class="max-w-xs lg:max-w-md">
                                     ${!msg.is_own ? `<p class="text-xs text-gray-600 mb-1">${msg.user_name}</p>` : ''}
-                                    <div class="rounded-lg p-3 ${msg.is_own ? 'bg-blue-500 text-white' : 'bg-gray-200'}">
+                                    <div class="rounded-lg p-3 ${msg.is_own ? 'bg-gray-800 text-white' : 'bg-gray-200'}">
                                         ${msg.body ? `<p>${msg.body}</p>` : ''}
                                         ${msg.file_path && msg.type === 'image' ? `<img src="/storage/${msg.file_path}" class="max-w-full rounded">` : ''}
                                         ${msg.file_path && msg.type === 'voice' ? `<audio controls src="/storage/${msg.file_path}" class="max-w-full"></audio>` : ''}
@@ -159,7 +159,7 @@
                     <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple</p>
                 </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900">
                         Add
                     </button>
                     <button type="button" onclick="document.getElementById('addParticipantsModal').classList.add('hidden')" 

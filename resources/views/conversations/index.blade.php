@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Messages</h1>
             <button onclick="document.getElementById('newConversationModal').classList.remove('hidden')" 
-                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900">
                 New Conversation
             </button>
         </div>
@@ -76,7 +76,7 @@
                     <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple users</p>
                 </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900">
                         Create
                     </button>
                     <button type="button" onclick="document.getElementById('newConversationModal').classList.add('hidden')" 
