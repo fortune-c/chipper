@@ -119,13 +119,26 @@
                             </svg>
                         </label>
 
-                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-50">
+
+                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-60 z-50">
+                            <li class="px-4 py-2 border-b">
+                                <div class="flex flex-col gap-1">
+                                    <span class="font-bold">{{ $user->name }}</span>
+                                    <button onclick="openStatusModal()" class="text-xs text-left hover:bg-base-200 p-1 rounded transition-colors w-full flex items-center gap-2">
+                                        @if($user->status_emoji || $user->status_message)
+                                            <span>{{ $user->status_emoji }} {{ $user->status_message }}</span>
+                                        @else
+                                            <span class="text-base-content/50">+ Set Status</span>
+                                        @endif
+                                    </button>
+                                </div>
+                            </li>
                             <li><a href="{{ route('profile.show') }}">View Profile</a></li>
                             <li><a href="{{ route('profile.edit') }}">Edit Profile</a></li>
                             <li class="border-t mt-1">
                                 <form method="POST" action="{{ route('logout') }}" class="inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-ghost btn-sm">Logout</button>
+                                    <button type="submit" class="btn btn-ghost btn-xs w-full text-left">Logout</button>
                                 </form>
                             </li>
                         </ul>
@@ -140,7 +153,7 @@
 
     <!-- Success Toast -->
     @if (session('success'))
-        <div class="toast toast-top toast-center">
+        <div class="toast toast-top toast-center z-50">
             <div class="alert alert-success animate-fade-out">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
                     viewBox="0 0 24 24">
@@ -159,6 +172,7 @@
     @auth
         <x-notification-modal :notifications="$unreadNotifications" />
         <x-admin-request-modal />
+        <x-status-modal />
     @endauth
 </body>
 </html>

@@ -41,6 +41,26 @@
                             <div id="previewArea" class="mt-3 grid grid-cols-4 gap-2"></div>
                         </div>
 
+                        <!-- Poll Creation (Hidden by default) -->
+                        <div id="pollFields" class="hidden mt-4 border-t pt-4">
+                            <input type="text" name="poll_question" placeholder="Ask a question..." class="input input-bordered w-full mb-2">
+                            <div id="pollOptions" class="space-y-2">
+                                <input type="text" name="poll_options[]" placeholder="Option 1" class="input input-bordered input-sm w-full">
+                                <input type="text" name="poll_options[]" placeholder="Option 2" class="input input-bordered input-sm w-full">
+                            </div>
+                            <button type="button" onclick="addPollOption()" class="btn btn-ghost btn-xs mt-2">+ Add Option</button>
+                            <label class="cursor-pointer label justify-start gap-2">
+                                <input type="checkbox" name="poll_multiple" class="checkbox checkbox-xs">
+                                <span class="label-text-alt">Allow multiple votes</span>
+                            </label>
+                        </div>
+                        
+                        <div class="mt-2 flex gap-2">
+                             <button type="button" onclick="document.getElementById('pollFields').classList.toggle('hidden')" class="btn btn-ghost btn-sm" title="Create Poll">
+                                📊 Poll
+                             </button>
+                        </div>
+
                         <div class="mt-4 flex items-center justify-end">
                             <button type="submit" class="btn btn-primary btn-sm">
                                 Chip
@@ -280,6 +300,16 @@
         function removeFile(index) {
             selectedFiles.splice(index, 1);
             updatePreview();
+        }
+
+        function addPollOption() {
+            const container = document.getElementById('pollOptions');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'poll_options[]';
+            input.placeholder = `Option ${container.children.length + 1}`;
+            input.className = 'input input-bordered input-sm w-full';
+            container.appendChild(input);
         }
 
         // Auto-refresh chips every 5 seconds

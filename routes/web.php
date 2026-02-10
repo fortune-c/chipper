@@ -35,6 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/chips/{chip}', [ChipController::class, 'update']);
     Route::delete('/chips/{chip}', [ChipController::class, 'destroy']);
     Route::post('/chips/{chip}/reply', [ChipController::class, 'reply']);
+    
+    // Reactions
+    Route::post('/reactions/toggle', [App\Http\Controllers\ReactionController::class, 'toggle'])->name('reactions.toggle');
+
+    // Polls
+    Route::post('/polls/{poll}/vote', [App\Http\Controllers\PollController::class, 'vote'])->name('polls.vote');
 
     // Tasks
     Route::resource('tasks', TaskController::class)

@@ -44,7 +44,7 @@
                     @endcan
                 </div>
 
-                <p class="mt-1">{{ $chip->message }}</p>
+                <p class="mt-1">{!! $chip->html_message !!}</p>
 
                 <!-- Media Display -->
                 @if($chip->media && count($chip->media) > 0)
@@ -65,6 +65,73 @@
                         @endforeach
                     </div>
                 @endif
+
+                <!-- Poll Display -->
+                @if($chip->poll)
+                    <div class="mt-3 p-3 bg-base-200 rounded-lg">
+                        <h4 class="font-bold text-sm mb-2">{{ $chip->poll->question }}</h4>
+                        <div class="space-y-2">
+                            @foreach($chip->poll->options as $option)
+                                @php
+                                    $totalVotes = $chip->poll->options->sum(fn($o) => $o->votes->count());
+                                    $optionVotes = $option->votes->count();
+                                    $percentage = $totalVotes > 0 ? round(($optionVotes / $totalVotes) * 100) : 0;
+                                    $userVoted = $option->votes->where('user_id', auth()->id())->isNotEmpty();
+                                @endphp
+                                <div class="relative group cursor-pointer" onclick="votePoll({{ $chip->poll->id }}, {{ $option->id }})">
+                                    {{-- Progress Bar Background --}}
+                                    <div class="absolute inset-0 bg-base-300 rounded h-full transition-all duration-500" style="width: {{ $percentage }}%"></div>
+                                    
+                                    {{-- Content --}}
+                                    <div class="relative z-10 flex justify-between items-center p-2 text-sm">
+                                        <div class="flex items-center gap-2">
+                                            <input type="checkbox" {{ $userVoted ? 'checked' : '' }} class="checkbox checkbox-xs checkbox-primary" disabled>
+                                            <span class="font-medium">{{ $option->text }}</span>
+                                        </div>
+                                        <span>{{ $percentage }}% ({{ $optionVotes }})</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                            <p class="text-xs text-base-content/60 mt-1 text-right">{{ $totalVotes }} votes · {{ $chip->poll->expires_at ? 'Expires ' . $chip->poll->expires_at->diffForHumans() : 'No expiry' }}</p>
+                        </div>
+                    </div>
+                @endif 
+
+                <!-- Reactions -->
+                <div class="mt-3 flex items-center gap-2">
+                    @php
+                        // Group reactions by emoji
+                        $reactionCounts = $chip->reactions->groupBy('emoji')->map->count();
+                        $userReactions = $chip->reactions->where('user_id', auth()->id())->pluck('emoji')->toArray();
+                        $popularEmojis = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
+                    @endphp
+
+                    {{-- Display existing reactions --}}
+                    @foreach($reactionCounts as $emoji => $count)
+                        <button onclick="toggleReaction({{ $chip->id }}, '{{ $emoji }}', 'chip')"
+                                class="btn btn-xs btn-outline gap-1 {{ in_array($emoji, $userReactions) ? 'btn-active btn-primary' : 'border-base-300' }} transition-all"
+                                id="reaction-chip-{{ $chip->id }}-{{ $emoji }}">
+                            <span>{{ $emoji }}</span>
+                            <span class="text-xs">{{ $count }}</span>
+                        </button>
+                    @endforeach
+
+                    {{-- Add Reaction Button --}}
+                    <div class="dropdown dropdown-top">
+                        <label tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/60 hover:bg-base-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </label>
+                        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 flex-row flex-wrap gap-1 z-50">
+                            @foreach($popularEmojis as $emoji)
+                                <li>
+                                    <button onclick="toggleReaction({{ $chip->id }}, '{{ $emoji }}', 'chip')" class="text-lg hover:bg-base-200 p-2 rounded">
+                                        {{ $emoji }}
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
 
         {{-- Reply and Show Replies buttons in a row --}}
         <div class="flex gap-2 mt-2">
@@ -117,5 +184,44 @@ function openImageModal(src) {
     modal.onclick = () => modal.remove();
     modal.innerHTML = `<img src="${src}" class="max-w-full max-h-full rounded-lg">`;
     document.body.appendChild(modal);
+}
+
+function toggleReaction(id, emoji, type) {
+    fetch('{{ route("reactions.toggle") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ id, emoji, type })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Reloading the page for simplicity in this iteration, 
+        // or we could update the DOM dynamically if we want to be fancy.
+        // For now, let's just reload to reflect state across all clients eventually.
+        // Actually, let's try to update just the button count if possible, 
+        // but since we're using a loop, a reload is safer to ensure sync.
+        // Ideally we'd replace the button HTML.
+        window.location.reload(); 
+    })
+    .catch(console.error);
+}
+
+function votePoll(pollId, optionId) {
+    fetch(`/polls/${pollId}/vote`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ option_id: optionId })
+    })
+    .then(response => {
+        if(response.ok) {
+            window.location.reload();
+        }
+    })
+    .catch(console.error);
 }
 </script>

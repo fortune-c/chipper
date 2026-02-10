@@ -11,23 +11,25 @@ Chipper Together aims to bridge the gap between formal communication tools and c
 ### Vision
 To create the ultimate internal communication platform that combines the best aspects of social media engagement with enterprise-grade security and productivity features.
 
-## Roadmap & Future Features
+## Key Features (Chipper Together)
 
-### Advanced Collaboration
-- **Live Reactions**: Real-time emoji reactions to posts and messages
-- **Mentions & Notifications**: Tag team members and get notified of relevant activity
-- **Status Updates**: Show availability, current projects, and working hours
-- **Polls & Surveys**: Gather team feedback and make collective decisions
-- **Event Scheduling**: Coordinate meetings and team events
-- **Integration Hub**: Connect with popular tools (Slack, Teams, Jira, GitHub, etc.)
+### Collaborative Communication
+- **Rich Chips (Posts)**: Share messages with multimedia attachments (images, videos, docs).
+- **Threaded Discussions**: Nested replies to keep conversations organized.
+- **Live Reactions**: Express feedback instantly with emoji reactions on posts and messages.
+- **Mentions & Notifications**: Tag team members (@user) to loop them in, with real-time alerts.
+- **Polls**: Gather team sentiment quickly with integrated voting.
 
-### Messaging Enhancements
-- **Typing Indicators**: See when someone is typing
-- **Read Receipts**: Know when messages are read
-- **Message Search**: Find old messages quickly
-- **Emoji Reactions**: React to messages with emojis
-- **Message Threading**: Reply to specific messages
-- **WebRTC Integration**: Full video/audio calling with Twilio, Agora, or Daily.co
+### Real-time Messaging
+- **Direct & Group Chats**: Private or team-based conversations.
+- **Media Sharing**: Drag-and-drop file sharing in chat.
+- **Video/Audio Calls**: Integrated calling interface for quick syncs.
+- **Read Status**: Know when your messages have been seen.
+
+### Productivity Tools
+- **Task Management**: Personal to-do lists integrated directly into the dashboard.
+- **Meeting Scheduler**: Coordinate and view upcoming team meetings.
+- **Status Updates**: Let your team know your availability with custom status messages.
 
 ## Tech stack
 - Backend: Laravel (PHP)

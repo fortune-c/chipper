@@ -31,4 +31,20 @@ class Chip extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function reactions()
+    {
+        return $this->morphMany(Reaction::class, 'reactable');
+    }
+
+    public function getHtmlMessageAttribute()
+    {
+        $message = e($this->message);
+        return preg_replace('/@([A-Za-z0-9_]+)/', '<a href="#" class="text-primary font-bold hover:underline">@$1</a>', $message);
+    }
+
+    public function poll()
+    {
+        return $this->hasOne(Poll::class);
+    }
 }

@@ -34,6 +34,8 @@ class ProfileController extends Controller
             'bio' => 'nullable|string|max:500',
             'role' => 'nullable|string|max:50',
             'avatar' => 'nullable|image|max:2048',
+            'status_message' => 'nullable|string|max:100',
+            'status_emoji' => 'nullable|string|max:10',
         ]);
 
         // Handle avatar upload
@@ -57,12 +59,19 @@ class ProfileController extends Controller
             Notification::send($superAdmins, new AdminRoleRequested($user));
         } else {
             // Normal role
-            $validated['admin_requested'] = false;
-            $validated['is_admin'] = false;
+            // Only reset admin_requested if role is physically present in request (meaning profile edit form submitted it)
+            if ($request->has('role')) {
+                 $validated['admin_requested'] = false;
+                 $validated['is_admin'] = false;
+            }
         }
 
         // Update the user
         $user->update($validated);
+        
+        if($request->has('status_update_only')) {
+             return back()->with('success', 'Status updated.');
+        }
 
         return back()->with('success', 'Profile updated successfully. Admin roles require approval.');
     }

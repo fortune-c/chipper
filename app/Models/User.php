@@ -28,6 +28,8 @@ class User extends Authenticatable
         'role',
         'is_admin',
         'admin_requested',
+        'status_message',
+        'status_emoji',
     ];
 
     /**

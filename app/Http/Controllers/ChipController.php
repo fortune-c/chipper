@@ -22,7 +22,7 @@ class ChipController extends Controller
             $afterId = $request->get('after', 0);
             $newChips = Chip::whereNull('parent_id')
                 ->where('id', '>', $afterId)
-                ->with('user')
+                ->with('user', 'reactions', 'poll', 'poll.options', 'poll.options.votes') // Eager load poll data
                 ->orderBy('id', 'asc')
                 ->get()
                 ->map(function($chip) {
@@ -36,7 +36,7 @@ class ChipController extends Controller
         }
 
         $chips = Chip::whereNull('parent_id')
-            ->with('user', 'replies.user', 'replies.replies.user')
+            ->with(['user', 'replies.user', 'replies.replies.user', 'reactions', 'replies.reactions', 'poll', 'poll.options', 'poll.options.votes'])
             ->latest()
             ->take(10)
             ->get();
@@ -83,10 +83,38 @@ class ChipController extends Controller
             }
         }
 
-        Auth::user()->chips()->create([
+        $chip = Auth::user()->chips()->create([
             'message' => $validated['message'],
             'media' => $media,
         ]);
+
+        // Handle Polls
+        if ($request->filled('poll_question') && $request->filled('poll_options')) {
+             $poll = $chip->poll()->create([
+                 'question' => $request->input('poll_question'),
+                 'allow_multiple_votes' => $request->has('poll_multiple'),
+                 'expires_at' => now()->addDays(1), // Default 1 day
+             ]);
+
+             foreach ($request->input('poll_options') as $optionText) {
+                 if (!empty($optionText)) {
+                     $poll->options()->create(['text' => $optionText]);
+                 }
+             }
+        }
+
+        // Handle Mentions
+        preg_match_all('/@([A-Za-z0-9_]+)/', $validated['message'], $matches);
+        if (!empty($matches[1])) {
+            $usernames = array_unique($matches[1]);
+            $users = \App\Models\User::whereIn('name', $usernames)->get();
+            
+            foreach ($users as $user) {
+                if ($user->id !== Auth::id()) {
+                    $user->notify(new \App\Notifications\UserMentioned($chip, Auth::user()));
+                }
+            }
+        }
 
         return redirect('/')->with('success', 'Chip has been posted!');
     }
