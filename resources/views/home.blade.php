@@ -93,7 +93,7 @@
         </div>
 
         <!-- Right Sidebar -->
-        <div class="space-y-4 my-auto">
+        <div class="space-y-4">
             <!-- Tasks Card -->
             <div class="card bg-base-100 shadow">
                 <div class="card-body">
