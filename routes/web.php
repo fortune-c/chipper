@@ -30,7 +30,7 @@ Route::get('/storage/{path}', function ($path) {
 Route::middleware('auth')->group(function () {
 
     // Chips
-    Route::post('/chips', [ChipController::class, 'store']);
+    Route::post('/chips', [ChipController::class, 'store'])->name('chips.store');
     Route::get('/chips/{chip}/edit', [ChipController::class, 'edit']);
     Route::put('/chips/{chip}', [ChipController::class, 'update']);
     Route::delete('/chips/{chip}', [ChipController::class, 'destroy']);

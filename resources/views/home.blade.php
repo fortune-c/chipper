@@ -13,7 +13,7 @@
             <!-- Chip Form -->
             <div class="card bg-base-100 shadow mt-4">
                 <div class="card-body">
-                    <form method="POST" action="/chips" enctype="multipart/form-data" id="chipForm">
+                    <form method="POST" action="{{ route('chips.store') }}" enctype="multipart/form-data" id="chipForm">
                         @csrf
                         <div class="form-control w-full">
                             <textarea name="message" placeholder="What's on your mind?"
@@ -196,6 +196,10 @@
                 
                 // Remove any existing media files from FormData
                 formData.delete('media[]');
+                
+                // Ensure we are sending a POST request and not spoofing PATCH/PUT
+                formData.delete('_method');
+                formData.append('_method', 'POST');
                 
                 // Add our selected files
                 selectedFiles.forEach(file => {
