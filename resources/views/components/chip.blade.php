@@ -122,7 +122,7 @@
                     {{-- Add Reaction Button --}}
                     <div class="dropdown dropdown-top">
                         <label tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/60 hover:bg-base-200">
-                            <img src="{{ asset('icons8-shocker-emoji-30.png') }}" alt="emoji">
+                            <img src="{{ asset('icons8-shocker-emoji-30.png') }}" alt="emoji" class="w-10 h-10">
                         </label>
                         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 flex-row flex-wrap gap-1 z-50">
                             @foreach($popularEmojis as $emoji)
