@@ -59,11 +59,16 @@ RUN npm install && npm run build
 # Run composer scripts now that all files are present
 RUN composer run-script post-autoload-dump
 
-# Create .env file and SQLite database, then run migrations
-RUN cp .env.example .env && \
-    touch /var/www/html/database/database.sqlite && \
-    php artisan key:generate --force && \
-    php artisan migrate --force
+# Ensure storage directory exists and has permissions
+RUN mkdir -p /var/www/html/storage/app/public/chips && \
+    mkdir -p /var/www/html/storage/framework/views && \
+    mkdir -p /var/www/html/storage/framework/cache && \
+    mkdir -p /var/www/html/storage/framework/sessions && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Set production environment variables
 ENV APP_ENV=production
@@ -96,11 +101,8 @@ COPY <<EOF /etc/apache2/ports.conf
 Listen \${PORT}
 EOF
 
-# Set permissions and create storage link
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database && \
-    chmod -R 755 /var/www/html/storage && \
-    mkdir -p /var/www/html/storage/app/public/chips && \
-    php artisan storage:link
+# Set permissions and create storage link (but skip migration here)
+RUN php artisan storage:link
 
 # Expose port (Render uses $PORT environment variable)
 ENV PORT=10000
@@ -110,5 +112,6 @@ EXPOSE 10000
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Use entrypoint script to run migrations on startup
+ENTRYPOINT ["docker-entrypoint.sh"]
+
