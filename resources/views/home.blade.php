@@ -48,11 +48,13 @@
                                 <input type="text" name="poll_options[]" placeholder="Option 1" class="input input-bordered input-sm w-full">
                                 <input type="text" name="poll_options[]" placeholder="Option 2" class="input input-bordered input-sm w-full">
                             </div>
-                            <button type="button" onclick="addPollOption()" class="btn btn-ghost btn-xs mt-2">+ Add Option</button>
-                            <label class="cursor-pointer label justify-start gap-2">
-                                <input type="checkbox" name="poll_multiple" class="checkbox checkbox-xs">
-                                <span class="label-text-alt">Allow multiple votes</span>
-                            </label>
+                            <div class="flex flex-row gap-4 items-center">                            
+                                <button type="button" onclick="addPollOption()" class="btn btn-ghost btn-xs mt-2">+ Add Option</button>
+                                <label class="cursor-pointer label justify-start gap-2">
+                                    <input type="checkbox" name="poll_multiple" class="checkbox checkbox-xs">
+                                    <span class="label-text-alt">Allow multiple votes</span>
+                                </label>
+                            </div>
                         </div>
                         
                         <div class="mt-2 flex gap-2">
