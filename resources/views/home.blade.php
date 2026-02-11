@@ -197,9 +197,8 @@
                 // Remove any existing media files from FormData
                 formData.delete('media[]');
                 
-                // Ensure we are sending a POST request and not spoofing PATCH/PUT
+                // Ensure no _method override exists (we want pure POST)
                 formData.delete('_method');
-                formData.append('_method', 'POST');
                 
                 // Add our selected files
                 selectedFiles.forEach(file => {
@@ -207,7 +206,7 @@
                 });
                 
                 // Submit via fetch
-                fetch('/chips', {
+                fetch(chipForm.action, {
                     method: 'POST',
                     body: formData,
                     headers: {

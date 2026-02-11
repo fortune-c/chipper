@@ -58,7 +58,10 @@
                                 </video>
                             @else
                                 <a href="/storage/{{ $media['path'] }}" target="_blank" class="flex items-center gap-2 p-3 bg-base-200 rounded-lg hover:bg-base-300 transition">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
                                     <span class="text-sm truncate">{{ $media['name'] }}</span>
                                 </a>
                             @endif
@@ -119,7 +122,7 @@
                     {{-- Add Reaction Button --}}
                     <div class="dropdown dropdown-top">
                         <label tabindex="0" class="btn btn-ghost btn-xs btn-circle text-base-content/60 hover:bg-base-200">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <img src="public/icons8-shocker-emoji-30.png" alt="emoji">
                         </label>
                         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 flex-row flex-wrap gap-1 z-50">
                             @foreach($popularEmojis as $emoji)
