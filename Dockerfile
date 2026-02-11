@@ -18,11 +18,13 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     sqlite3 \
     libsqlite3-dev \
+    libpq-dev \
     nodejs \
     npm \
     && docker-php-ext-install \
     pdo_mysql \
     pdo_sqlite \
+    pdo_pgsql \
     mbstring \
     exif \
     pcntl \
